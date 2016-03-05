@@ -1,4 +1,5 @@
--- xmonad config used by Vic Fryzel
+-- xmonad config
+-- Tweaks by: Yoshua Wakeham
 -- Author: Vic Fryzel
 -- http://github.com/vicfryzel/xmonad-config
 
@@ -11,6 +12,7 @@ import XMonad.Hooks.ManageHelpers
 import XMonad.Hooks.SetWMName
 import XMonad.Layout.Fullscreen
 import XMonad.Layout.NoBorders
+import XMonad.Layout.PerWorkspace
 import XMonad.Layout.Spiral
 import XMonad.Layout.Tabbed
 import XMonad.Layout.ThreeColumns
@@ -25,10 +27,10 @@ import qualified Data.Map        as M
 -- The preferred terminal program, which is used in a binding below and by
 -- certain contrib modules.
 --
-myTerminal = "/usr/bin/gnome-terminal"
+myTerminal = "/usr/bin/urxvt"
 
 -- The command to lock the screen or show the screensaver.
-myScreensaver = "/usr/bin/gnome-screensaver-command --lock"
+myScreensaver = "xscreensaver-command --lock"
 
 -- The command to take a selective screenshot, where you select
 -- what you'd like to capture on the screen.
@@ -46,7 +48,7 @@ myLauncher = "$(yeganesh -x -- -fn '-*-terminus-*-r-normal-*-*-120-*-*-*-*-iso88
 -- Workspaces
 -- The default number of workspaces (virtual screens) and their names.
 --
-myWorkspaces = ["1:term","2:web","3:code","4:vm","5:media"] ++ map show [6..9]
+myWorkspaces = ["1:mail","2:web","3:code","4:vm","5:media"] ++ map show [6..9]
 
 
 ------------------------------------------------------------------------
@@ -64,17 +66,23 @@ myWorkspaces = ["1:term","2:web","3:code","4:vm","5:media"] ++ map show [6..9]
 -- 'className' and 'resource' are used below.
 --
 myManageHook = composeAll
-    [ className =? "Chromium"       --> doShift "2:web"
-    , className =? "Google-chrome"  --> doShift "2:web"
-    , resource  =? "desktop_window" --> doIgnore
-    , className =? "Galculator"     --> doFloat
-    , className =? "Steam"          --> doFloat
-    , className =? "Gimp"           --> doFloat
-    , resource  =? "gpicview"       --> doFloat
-    , className =? "MPlayer"        --> doFloat
-    , className =? "VirtualBox"     --> doShift "4:vm"
-    , className =? "Xchat"          --> doShift "5:media"
-    , className =? "stalonetray"    --> doIgnore
+    [ className =? "Chromium"          --> doShift "2:web"
+    , className =? "Google-chrome"     --> doShift "2:web"
+    , className =? "Firefox"           --> doShift "2:web"
+    , className =? "Thunderbird"       --> doShift "1:mail"
+    , className =? "Emacs"             --> doShift "3:code"
+    , className =? "Gvim"              --> doShift "3:code"
+    , className =? "jetbrains-idea-ce" --> doShift "3:code"
+    , title     =? "ncmpcpp"           --> doShift "5:media"
+    , resource  =? "desktop_window"    --> doIgnore
+    , className =? "Galculator"        --> doFloat
+    , className =? "Steam"             --> doFloat
+    , className =? "Gimp"              --> doFloat
+    , resource  =? "gpicview"          --> doFloat
+    , className =? "MPlayer"           --> doFloat
+    , className =? "VirtualBox"        --> doShift "4:vm"
+    , className =? "Xchat"             --> doShift "5:media"
+    , className =? "stalonetray"       --> doIgnore
     , isFullscreen --> (doF W.focusDown <+> doFullFloat)]
 
 
@@ -188,6 +196,18 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   -- Eject CD tray.
   , ((0, 0x1008FF2C),
      spawn "eject -T")
+
+  -- Shutdown system
+  , ((mod4Mask .|. shiftMask, xK_F4),
+     spawn "shutdown -h now")
+
+  -- Reboot system
+  , ((mod4Mask .|. shiftMask, xK_r),
+     spawn "shutdown -r now")
+
+  -- Suspend system
+  , ((mod4Mask .|. shiftMask, xK_s),
+     spawn "systemctl suspend -i")
 
   --------------------------------------------------------------------
   -- "Standard" xmonad key bindings
@@ -326,9 +346,13 @@ myMouseBindings (XConfig {XMonad.modMask = modMask}) = M.fromList $
 -- Perform an arbitrary action each time xmonad starts or is restarted
 -- with mod-q.  Used by, e.g., XMonad.Layout.PerWorkspace to initialize
 -- per-workspace layout choices.
---
--- By default, do nothing.
-myStartupHook = return ()
+myStartupHook :: X ()
+myStartupHook = do
+  spawn "thunderbird &"
+  spawn "firefox &"
+  spawn "emacs &"
+  spawn "urxvt -e ncmpcpp"
+  setWMName "LG3D"
 
 
 ------------------------------------------------------------------------
@@ -344,7 +368,10 @@ main = do
           , ppSep = "   "
       }
       , manageHook = manageDocks <+> myManageHook
-      , startupHook = setWMName "LG3D"
+      , startupHook = myStartupHook
+      , layoutHook = smartBorders $
+                     --onWorkspaces ["code", "3"] Mirror $
+                     myLayout
   }
 
 
