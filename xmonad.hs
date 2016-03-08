@@ -350,8 +350,8 @@ myStartupHook :: X ()
 myStartupHook = do
   spawn "thunderbird &"
   spawn "firefox &"
-  spawn "emacs &"
-  spawn "urxvt -e ncmpcpp"
+  {- spawn "emacs &" -}
+  {- spawn "urxvt -e ncmpcpp" -}
   setWMName "LG3D"
 
 
