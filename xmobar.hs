@@ -12,8 +12,9 @@ Config {
     position = Top,
     lowerOnStart = True,
     commands = [
-        --need with_alsa and with_mpd to get these to work. That means AUR ...
-        --Run Volume "default" "Master" ["-h","#FFB6B0","-l","#CEFFAC","-n","#FFFFCC"] 10,
+        Run Kbd [("us(dvorak)", "DV"), ("us", "US")],
+        Run Volume "default" "Master" ["-h","#FFB6B0","-l","#CEFFAC","-n","#FFFFCC"] 10,
+        --need with_mpd to get this to work ...
         --Run MPD ["-t", "<state>: <artist> - <track>"] 10,
         Run Weather "YMML" ["-t","<tempC>C <skyCondition>","-L","64","-H","77","-n","#CEFFAC","-h","#FFB6B0","-l","#96CBFE"] 36000,
         Run MultiCpu ["-t","Cpu: <total0> <total1> <total2> <total3>","-L","30","-H","60","-h","#FFB6B0","-l","#CEFFAC","-n","#FFFFCC","-w","3"] 10,
@@ -27,5 +28,5 @@ Config {
     ],
     sepChar = "%",
     alignSep = "}{",
-    template = "%StdinReader% }{ %multicpu%   %memory%   %swap%   %wlp5s0wi%   <fc=#FFFFCC>%date%</fc>   %YMML%"
+    template = "%StdinReader% }{ [%kbd%]        %default:Master%        %multicpu%   %memory%   %swap%   %wlp5s0wi%        <fc=#FFFFCC>%date%</fc>   %YMML%"
 }
