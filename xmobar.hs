@@ -12,9 +12,9 @@ Config {
     position = Top,
     lowerOnStart = True,
     commands =
-        [ Run Kbd [ ("us(dvorak)", "<fc=#00008B>DV</fc>")
-                  , ("us"        , "<fc=#8B0000>US</fc>")
-                  ]
+        [ Run Kbd                       [ ("us(dvorak)", "<fc=#CEACFF>DV</fc>")
+                                        , ("us"        , "<fc=#CEFFAC>US</fc>")
+                                        ]
 
         , Run Volume "default" "Master" [ "-h", "#FFB6B0"
                                         , "-l", "#CEFFAC"
@@ -74,5 +74,5 @@ Config {
         ],
     sepChar = "%",
     alignSep = "}{",
-    template = "%StdinReader% }{ [%kbd%]        %default:Master%        %multicpu%   %memory%   %swap%   %wlp5s0wi%        <fc=#FFFFCC>%date%</fc>   %YMML%"
+    template = "%StdinReader% }{ [%kbd%] <fc=#888888>·</fc> %default:Master%<fc=#888888>·</fc> %multicpu% <fc=#888888>·</fc> %memory% <fc=#888888>·</fc> %swap% <fc=#888888>·</fc> %wlp5s0wi% <fc=#888888>·</fc> <fc=#FFFFCC>%date%</fc> "
 }
